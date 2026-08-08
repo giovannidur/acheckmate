@@ -77,15 +77,19 @@ export default function CustomCursor() {
           const p = trail.current[i];
           ctx.lineTo(p.x, p.y);
         }
-        ctx.strokeStyle = 'rgba(188, 0, 0, 0.08)';
+        ctx.strokeStyle = 'rgba(255, 45, 45, 0.25)';
         ctx.lineWidth = 1;
         ctx.stroke();
       }
 
+      // Subtle glow so the cursor pops on both dark and light sections
+      ctx.shadowColor = 'rgba(255, 45, 45, 0.9)';
+      ctx.shadowBlur = 6;
+
       // Center crosshair (at mouse position - instant)
       const crossSize = expanded ? 0 : 10;
-      ctx.strokeStyle = expanded ? 'rgba(188, 0, 0, 0)' : 'rgba(188, 0, 0, 0.7)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = expanded ? 'rgba(255, 45, 45, 0)' : 'rgba(255, 45, 45, 0.95)';
+      ctx.lineWidth = 1.5;
 
       // Horizontal line
       ctx.beginPath();
@@ -109,23 +113,25 @@ export default function CustomCursor() {
 
       // Center dot
       ctx.beginPath();
-      ctx.arc(mx, my, expanded ? 0 : 1.5, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(188, 0, 0, 0.9)';
+      ctx.arc(mx, my, expanded ? 0 : 2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 45, 45, 1)';
       ctx.fill();
 
       // Outer ring (follows with lag)
       const ringRadius = expanded ? 35 : 20;
       ctx.beginPath();
       ctx.arc(sx, sy, ringRadius, 0, Math.PI * 2);
-      ctx.strokeStyle = expanded ? 'rgba(188, 0, 0, 0.3)' : 'rgba(188, 0, 0, 0.12)';
-      ctx.lineWidth = expanded ? 1.5 : 0.5;
+      ctx.strokeStyle = expanded ? 'rgba(255, 45, 45, 0.5)' : 'rgba(255, 45, 45, 0.3)';
+      ctx.lineWidth = expanded ? 1.5 : 1;
       ctx.stroke();
+
+      ctx.shadowBlur = 0;
 
       // Expanded fill
       if (expanded) {
         ctx.beginPath();
         ctx.arc(sx, sy, 35, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(188, 0, 0, 0.06)';
+        ctx.fillStyle = 'rgba(255, 45, 45, 0.08)';
         ctx.fill();
       }
 

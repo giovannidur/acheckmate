@@ -89,7 +89,7 @@ export default function HeroSection() {
 
         <ScrollReveal delay={700}>
           <p className="mt-6 opacity-40 max-w-[500px] leading-[1.8] text-sm md:text-base">
-            UGC Creator, Building Architect & Web Developer. Ich verbinde technischen Code mit künstlerischer Leidenschaft.
+            UGC Creator, Building Architect & Web Developer. Baue Sachen für Roblox und das Web, mit viel Liebe zum Detail.
           </p>
         </ScrollReveal>
 

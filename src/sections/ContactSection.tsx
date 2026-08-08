@@ -102,10 +102,11 @@ export default function ContactSection() {
 
             {/* Discord Card */}
             <div
-              className="rounded-[28px] border border-white/[0.06] transition-all duration-700 hover:border-[#BC0000]/20 group flex flex-col"
+              className="rounded-[28px] border border-white/[0.1] transition-all duration-700 hover:border-[#BC0000]/30 hover:-translate-y-1.5 group flex flex-col"
               style={{
-                background: 'rgba(255, 255, 255, 0.02)',
+                background: 'rgba(255, 255, 255, 0.03)',
                 backdropFilter: 'blur(20px)',
+                boxShadow: '0 8px 30px -12px rgba(0, 0, 0, 0.4)',
               }}
               data-interactive
             >
@@ -122,7 +123,7 @@ export default function ContactSection() {
                 </h2>
 
                 <p className="text-sm opacity-30 mb-10 leading-[1.7] max-w-[320px] flex-1">
-                  Schreib mir direkt auf Discord — am schnellsten erreichbar.
+                  Schreib mir direkt auf Discord, da bin ich am schnellsten erreichbar.
                 </p>
 
                 <div>
@@ -143,10 +144,11 @@ export default function ContactSection() {
 
             {/* Email Card */}
             <div
-              className="rounded-[28px] border border-white/[0.06] transition-all duration-700 hover:border-[#BC0000]/20 group flex flex-col"
+              className="rounded-[28px] border border-white/[0.1] transition-all duration-700 hover:border-[#BC0000]/30 hover:-translate-y-1.5 group flex flex-col"
               style={{
-                background: 'rgba(255, 255, 255, 0.02)',
+                background: 'rgba(255, 255, 255, 0.03)',
                 backdropFilter: 'blur(20px)',
+                boxShadow: '0 8px 30px -12px rgba(0, 0, 0, 0.4)',
               }}
               data-interactive
             >

@@ -4,12 +4,12 @@ import MagneticButton from '../components/MagneticButton';
 import FloatingChess from '../components/FloatingChess';
 
 const gridItems = [
-  { color: 'linear-gradient(135deg, #BC0000 0%, #800000 100%)', label: 'UGC' },
-  { color: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)', label: 'Build' },
-  { color: 'linear-gradient(135deg, #2a2a2a 0%, #444 100%)', label: 'Code' },
-  { color: 'linear-gradient(135deg, #BC0000 0%, #600000 100%)', label: 'Design' },
-  { color: 'linear-gradient(135deg, #333 0%, #555 100%)', label: 'Create' },
-  { color: 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)', label: 'Ship' },
+  { color: 'linear-gradient(135deg, #BC0000 0%, #800000 100%)', label: 'UGC', icon: '🎮' },
+  { color: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)', label: 'Build', icon: '🏗️' },
+  { color: 'linear-gradient(135deg, #2a2a2a 0%, #444 100%)', label: 'Code', icon: '💻' },
+  { color: 'linear-gradient(135deg, #BC0000 0%, #600000 100%)', label: 'Design', icon: '🎨' },
+  { color: 'linear-gradient(135deg, #333 0%, #555 100%)', label: 'Create', icon: '✨' },
+  { color: 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)', label: 'Ship', icon: '🚀' },
 ];
 
 export default function InstagramSection() {
@@ -90,7 +90,7 @@ export default function InstagramSection() {
             {gridItems.map((item, i) => (
               <div
                 key={i}
-                className="aspect-square rounded-2xl transition-all duration-700 relative overflow-hidden group"
+                className="aspect-square rounded-2xl transition-all duration-700 relative overflow-hidden group flex flex-col items-center justify-center"
                 data-cursor-text={item.label}
                 data-interactive
                 onMouseEnter={() => setHoveredGrid(i)}
@@ -100,10 +100,17 @@ export default function InstagramSection() {
                   transform: hoveredGrid === i ? 'scale(1.1)' : hoveredGrid !== null ? 'scale(0.95)' : 'scale(1)',
                   opacity: hoveredGrid !== null && hoveredGrid !== i ? 0.5 : 1,
                   zIndex: hoveredGrid === i ? 10 : 1,
+                  boxShadow: hoveredGrid === i
+                    ? '0 16px 32px -10px rgba(0, 0, 0, 0.5)'
+                    : '0 4px 12px -6px rgba(0, 0, 0, 0.25)',
                 }}
               >
+                <span className="text-xl md:text-2xl opacity-80 group-hover:scale-110 transition-transform duration-500">
+                  {item.icon}
+                </span>
+
                 {/* Hover overlay */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500 flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500 flex items-end justify-center pb-3">
                   <span className="text-white text-[9px] tracking-[3px] uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ fontFamily: "'Space Mono', monospace" }}>
                     {item.label}
                   </span>

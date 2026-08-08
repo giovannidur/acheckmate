@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import Loader from './components/Loader';
 import CustomCursor from './components/CustomCursor';
+import SoundFX from './components/SoundFX';
 import GrainOverlay from './components/GrainOverlay';
 import Toast from './components/Toast';
 import Navigation from './components/Navigation';
@@ -57,6 +58,9 @@ export default function App() {
 
       {/* Custom Cursor */}
       <CustomCursor />
+
+      {/* Hover/Click sound feedback */}
+      <SoundFX />
 
       {/* Toast Notification */}
       <Toast />

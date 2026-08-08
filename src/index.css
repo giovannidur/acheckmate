@@ -75,14 +75,14 @@ html.lenis, html.lenis body {
   font-size: 8px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #BC0000;
+  color: #FF4444;
   opacity: 0;
   transition: opacity 0.3s;
-  text-shadow: 0 0 10px rgba(188, 0, 0, 0.3);
+  text-shadow: 0 0 10px rgba(255, 45, 45, 0.6);
 }
 
 .cursor-text.visible {
-  opacity: 0.8;
+  opacity: 1;
 }
 
 /* Toast notification */
@@ -188,11 +188,14 @@ html.lenis, html.lenis body {
 
 .reveal-line {
   overflow: hidden;
+  padding-top: 0.12em;
+  margin-top: -0.12em;
 }
 
 .reveal-line-inner {
   transform: translateY(110%);
   transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1);
+  padding-bottom: 0.08em;
 }
 
 .reveal-line.revealed .reveal-line-inner {

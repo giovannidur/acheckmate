@@ -24,11 +24,11 @@ const faqs: FAQ[] = [
   },
   {
     keywords: ['discord', 'dc'],
-    answer: 'Mein Discord: gio0vani — Du kannst mich dort direkt anschreiben! 💬',
+    answer: 'Mein Discord ist gio0vani, schreib mich da einfach direkt an! 💬',
   },
   {
     keywords: ['instagram', 'insta', 'ig'],
-    answer: 'Folge mir auf Instagram: @gio0vannii — Dort poste ich regelmäßig Content! 📸',
+    answer: 'Klar, du findest mich auf Instagram unter @gio0vannii. Poste da regelmäßig neuen Content! 📸',
   },
   {
     keywords: ['roblox', 'ugc', 'avatar', 'item'],
@@ -48,11 +48,11 @@ const faqs: FAQ[] = [
   },
   {
     keywords: ['wer bist du', 'about', 'über dich', 'was machst du'],
-    answer: 'Ich bin ACHECKMATE — UGC Creator, Web Developer und Building Architect. Ich verbinde Code mit Kreativität! ✨',
+    answer: 'Ich bin ACHECKMATE, UGC Creator, Web Developer und Building Architect. Verbinde am liebsten Code mit Kreativität! ✨',
   },
   {
     keywords: ['danke', 'thanks', 'thx', 'dankeschön'],
-    answer: 'Gerne! Wenn du noch Fragen hast, schreib einfach. Ansonsten — bis bald! 🙌',
+    answer: 'Gerne! Wenn du noch Fragen hast, schreib einfach. Ansonsten bis bald! 🙌',
   },
   {
     keywords: ['hilfe', 'help', 'commands', 'befehle'],
@@ -161,7 +161,7 @@ export default function HelpBot() {
         id: Date.now() + 1,
         type: 'bot',
         text: isImportant && DISCORD_WEBHOOK_URL
-          ? `${answer}\n\n📨 Ich hab ACHECKMATE benachrichtigt — er meldet sich bald bei dir!`
+          ? `${answer}\n\n📨 Ich hab ACHECKMATE benachrichtigt, er meldet sich bald bei dir!`
           : answer,
         time: new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }),
       };

@@ -12,7 +12,7 @@ interface GuideMessage {
 const guideMessages: GuideMessage[] = [
   { section: 'hero', message: 'Checkmate! Willkommen in meinem Reich. Mach mach und scroll mal runter!' },
   { section: 'roblox', message: 'Das ist mein Lab. Hier entstehen die besten UGC Items und Maps.' },
-  { section: 'webdev', message: 'Code ist wie Schach — man muss immer drei Züge voraus sein.' },
+  { section: 'webdev', message: 'Code ist wie Schach, man muss immer drei Züge voraus denken.' },
   { section: 'instagram', message: 'Hier gibt es den visuellen Flex. Folg mir mal!' },
   { section: 'contact', message: 'Dein Zug! Schreib mir, wenn du ein Projekt starten willst.' },
 ];
@@ -81,7 +81,7 @@ export default function RobloxGuide() {
     return (
       <button
         onClick={() => setIsMinimized(false)}
-        className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-[9000] w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-white/10 shadow-2xl flex items-center justify-center text-white/70 hover:text-white transition-colors"
+        className="fixed bottom-3 left-3 sm:bottom-5 sm:left-5 z-[9000] w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-white/10 shadow-2xl flex items-center justify-center text-white/70 hover:text-white transition-colors"
         style={{ background: 'rgba(10, 10, 10, 0.98)', backdropFilter: 'blur(20px)' }}
         aria-label="Guide öffnen"
       >
@@ -92,10 +92,10 @@ export default function RobloxGuide() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 z-[9000] p-2 sm:p-4 md:p-6 max-w-[calc(100vw-1rem)] sm:max-w-[420px] md:max-w-[480px] transition-opacity duration-300"
+      className="fixed bottom-0 left-0 z-[9000] p-2 sm:p-4 md:p-6 max-w-[calc(100vw-6rem)] sm:max-w-[420px] md:max-w-[480px] transition-opacity duration-300"
       style={{
         opacity: nearFooter ? 0 : 1,
-        pointerEvents: nearFooter ? 'none' : 'none'
+        pointerEvents: nearFooter ? 'none' : 'auto'
       }}
     >
       <div

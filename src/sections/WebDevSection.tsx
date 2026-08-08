@@ -11,7 +11,7 @@ const services = [
   {
     num: '02',
     title: 'Development',
-    desc: 'Von Frontend bis Backend — sauberer, performanter Code.',
+    desc: 'Von Frontend bis Backend, sauberer und performanter Code.',
   },
   {
     num: '03',
@@ -82,14 +82,17 @@ export default function WebDevSection() {
           {services.map((service, i) => (
             <ScrollReveal key={service.num} delay={600 + i * 120}>
               <div
-                className="h-full p-8 md:p-10 rounded-[24px] border border-white/[0.06] transition-all duration-500 flex flex-col group"
+                className="h-full p-8 md:p-10 rounded-[24px] border transition-all duration-500 flex flex-col group"
                 onMouseEnter={() => setHoveredService(i)}
                 onMouseLeave={() => setHoveredService(null)}
                 data-interactive
                 style={{
-                  background: hoveredService === i ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.02)',
+                  background: hoveredService === i ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)',
                   transform: hoveredService === i ? 'translateY(-6px)' : 'translateY(0)',
-                  borderColor: hoveredService === i ? 'rgba(188, 0, 0, 0.2)' : 'rgba(255,255,255,0.06)',
+                  borderColor: hoveredService === i ? 'rgba(188, 0, 0, 0.35)' : 'rgba(255,255,255,0.1)',
+                  boxShadow: hoveredService === i
+                    ? '0 20px 40px -12px rgba(188, 0, 0, 0.25)'
+                    : '0 4px 16px -8px rgba(0, 0, 0, 0.3)',
                 }}
               >
                 <span

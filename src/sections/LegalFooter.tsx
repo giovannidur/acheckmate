@@ -34,7 +34,7 @@ export default function LegalFooter() {
                 ACHECKMATE
               </h3>
               <p className="text-[12px] leading-relaxed opacity-30 max-w-[250px]">
-                UGC Creator, Building Architect & Web Developer. Kreativität trifft Präzision.
+                UGC Creator, Building Architect & Web Developer aus Deutschland.
               </p>
               <div className="mt-6 flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
@@ -193,11 +193,20 @@ function LegalModal({ page, onClose }: { page: LegalPage; onClose: () => void })
     setTimeout(onClose, 400);
   };
 
+  // Close on Escape key
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, []);
+
   if (!content) return null;
 
   return (
     <div
-      className="fixed inset-0 z-[9800] flex items-center justify-center p-4 md:p-8 transition-opacity duration-400"
+      className="fixed inset-0 z-[9800] flex items-center justify-center p-3 sm:p-4 md:p-8 transition-opacity duration-400"
       style={{ opacity: visible ? 1 : 0 }}
       onClick={handleClose}
     >
@@ -206,63 +215,70 @@ function LegalModal({ page, onClose }: { page: LegalPage; onClose: () => void })
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-3xl max-h-[85vh] overflow-y-auto rounded-[24px] border border-white/10 p-8 md:p-12 transition-all duration-500"
+        className="relative w-full max-w-3xl h-[88vh] sm:h-auto sm:max-h-[85vh] rounded-[20px] sm:rounded-[24px] border border-white/10 transition-all duration-500 flex flex-col overflow-hidden"
         style={{
           background: 'rgba(16, 16, 16, 0.98)',
           backdropFilter: 'blur(40px)',
-          scrollbarWidth: 'none',
           transform: visible ? 'translateY(0) scale(1)' : 'translateY(40px) scale(0.95)',
           opacity: visible ? 1 : 0,
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close button */}
-        <MagneticButton
-          onClick={handleClose}
-          className="absolute top-6 right-6 w-10 h-10 rounded-full border border-white/10 flex items-center justify-center bg-transparent text-white hover:border-[#BC0000] hover:text-[#BC0000] transition-all duration-300 text-sm"
-          cursorText="Close"
-          strength={0.5}
-        >
-          ✕
-        </MagneticButton>
+        {/* Header (always visible, doesn't scroll away) */}
+        <div className="flex items-start justify-between gap-4 px-6 sm:px-8 md:px-12 pt-6 sm:pt-8 md:pt-12 pb-4 shrink-0">
+          <div>
+            <span
+              className="block text-[10px] tracking-[3px] uppercase mb-3 opacity-50"
+              style={{ fontFamily: "'Space Mono', monospace", color: '#BC0000' }}
+            >
+              // Legal
+            </span>
+            <h2 className="text-xl sm:text-2xl md:text-4xl font-black uppercase tracking-tight">
+              {content.title}
+            </h2>
+          </div>
 
-        {/* Header */}
-        <span
-          className="block text-[10px] tracking-[3px] uppercase mb-4 opacity-50"
-          style={{ fontFamily: "'Space Mono', monospace", color: '#BC0000' }}
-        >
-          // Legal
-        </span>
-        <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight mb-10">
-          {content.title}
-        </h2>
-
-        {/* Content */}
-        <div className="space-y-8">
-          {content.sections.map((section, i) => (
-            <div key={i} className="group">
-              {section.heading && (
-                <h3 className="font-bold text-sm md:text-base uppercase tracking-tight mb-3 text-white flex items-center gap-3">
-                  <span className="w-4 h-[1px] bg-[#BC0000] opacity-50" />
-                  {section.heading}
-                </h3>
-              )}
-              <p className="text-sm leading-[1.8] opacity-50 whitespace-pre-line pl-7">{section.text}</p>
-            </div>
-          ))}
+          <MagneticButton
+            onClick={handleClose}
+            className="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/10 flex items-center justify-center bg-transparent text-white hover:border-[#BC0000] hover:text-[#BC0000] transition-all duration-300 text-sm"
+            cursorText="Close"
+            strength={0.5}
+          >
+            ✕
+          </MagneticButton>
         </div>
 
-        {/* Footer */}
-        <div className="mt-12 pt-6 border-t border-white/5 flex justify-between items-center">
-          <span className="text-[10px] tracking-[2px] uppercase opacity-20" style={{ fontFamily: "'Space Mono', monospace" }}>
-            Stand: {new Date().toLocaleDateString('de-DE', { month: 'long', year: 'numeric' })}
-          </span>
-          <button
-            onClick={handleClose}
-            className="text-[10px] tracking-[2px] uppercase opacity-30 hover:opacity-100 transition-opacity bg-transparent border-none text-white"
-          >
-            Schließen
-          </button>
+        {/* Scrollable content */}
+        <div
+          className="flex-1 overflow-y-auto px-6 sm:px-8 md:px-12 pb-6 sm:pb-8 md:pb-12"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          <div className="space-y-8">
+            {content.sections.map((section, i) => (
+              <div key={i} className="group">
+                {section.heading && (
+                  <h3 className="font-bold text-sm md:text-base uppercase tracking-tight mb-3 text-white flex items-center gap-3">
+                    <span className="w-4 h-[1px] bg-[#BC0000] opacity-50" />
+                    {section.heading}
+                  </h3>
+                )}
+                <p className="text-sm leading-[1.8] opacity-50 whitespace-pre-line pl-7">{section.text}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Footer */}
+          <div className="mt-12 pt-6 border-t border-white/5 flex justify-between items-center">
+            <span className="text-[10px] tracking-[2px] uppercase opacity-20" style={{ fontFamily: "'Space Mono', monospace" }}>
+              Stand: {new Date().toLocaleDateString('de-DE', { month: 'long', year: 'numeric' })}
+            </span>
+            <button
+              onClick={handleClose}
+              className="text-[10px] tracking-[2px] uppercase opacity-30 hover:opacity-100 transition-opacity bg-transparent border-none text-white"
+            >
+              Schließen
+            </button>
+          </div>
         </div>
       </div>
     </div>

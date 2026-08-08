@@ -65,7 +65,7 @@ export default function RobloxSection() {
 
         <ScrollReveal delay={450}>
           <p className="mt-8 opacity-50 max-w-[500px] leading-[1.8] text-sm md:text-base" style={{ color: '#000' }}>
-            Meine Arbeit auf der Roblox-Plattform — von UGC Items bis hin zu kompletten Welten.
+            Meine Arbeit auf der Roblox-Plattform, von UGC Items bis hin zu kompletten Welten.
           </p>
         </ScrollReveal>
 
@@ -97,13 +97,17 @@ export default function RobloxSection() {
           {skills.map((item, i) => (
             <ScrollReveal key={item.title} delay={700 + i * 120}>
               <div
-                className="h-full p-8 md:p-10 rounded-[24px] border border-black/[0.08] transition-all duration-500 flex flex-col"
+                className="h-full p-8 md:p-10 rounded-[24px] border transition-all duration-500 flex flex-col"
                 onMouseEnter={() => setHoveredItem(i)}
                 onMouseLeave={() => setHoveredItem(null)}
                 data-interactive
                 style={{
-                  background: hoveredItem === i ? 'rgba(0,0,0,0.12)' : 'rgba(0,0,0,0.04)',
+                  background: hoveredItem === i ? 'rgba(0,0,0,0.14)' : 'rgba(0,0,0,0.05)',
+                  borderColor: hoveredItem === i ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.1)',
                   transform: hoveredItem === i ? 'translateY(-6px)' : 'translateY(0)',
+                  boxShadow: hoveredItem === i
+                    ? '0 20px 40px -14px rgba(0, 0, 0, 0.35)'
+                    : '0 4px 14px -8px rgba(0, 0, 0, 0.15)',
                 }}
               >
                 <span
