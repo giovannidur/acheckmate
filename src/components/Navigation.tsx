@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { randomStatus } from '../utils/status';
 
 interface NavProps {
   onNavigate: (section: string) => void;
@@ -8,6 +9,7 @@ export default function Navigation({ onNavigate }: NavProps) {
   const [clock, setClock] = useState('00:00:00');
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [status] = useState(randomStatus);
 
   useEffect(() => {
     const updateClock = () => {
@@ -66,6 +68,25 @@ export default function Navigation({ onNavigate }: NavProps) {
         </div>
 
         <div className="flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-2 max-w-[220px]">
+            <span className="relative flex h-1.5 w-1.5 shrink-0">
+              <span
+                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50"
+                style={{ background: '#4ADE80' }}
+              />
+              <span
+                className="relative inline-flex rounded-full h-1.5 w-1.5"
+                style={{ background: '#4ADE80' }}
+              />
+            </span>
+            <span
+              className="text-[9px] tracking-[1.5px] opacity-35 lowercase truncate"
+              style={{ fontFamily: "'Space Mono', monospace" }}
+            >
+              {status}
+            </span>
+          </div>
+
           <div
             className="hidden md:block text-[10px] tracking-[2px] uppercase opacity-40"
             style={{ fontFamily: "'Space Mono', monospace" }}

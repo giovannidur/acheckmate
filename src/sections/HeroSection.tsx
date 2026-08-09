@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import ScrollReveal, { LineReveal } from '../components/ScrollReveal';
 import Marquee from '../components/Marquee';
 import FloatingChess from '../components/FloatingChess';
+import { randomStatus } from '../utils/status';
 
 export default function HeroSection() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [status] = useState(randomStatus);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -91,6 +93,24 @@ export default function HeroSection() {
           <p className="mt-6 opacity-40 max-w-[500px] leading-[1.8] text-sm md:text-base">
             UGC Creator, Building Architect & Web Developer. Baue Sachen für Roblox und das Web, mit viel Liebe zum Detail.
           </p>
+          <div className="flex items-center gap-2 mt-5">
+            <span className="relative flex h-1.5 w-1.5 shrink-0">
+              <span
+                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50"
+                style={{ background: '#4ADE80' }}
+              />
+              <span
+                className="relative inline-flex rounded-full h-1.5 w-1.5"
+                style={{ background: '#4ADE80' }}
+              />
+            </span>
+            <span
+              className="text-[10px] tracking-[1.5px] opacity-30 lowercase"
+              style={{ fontFamily: "'Space Mono', monospace" }}
+            >
+              {status}
+            </span>
+          </div>
         </ScrollReveal>
 
         <ScrollReveal delay={900}>

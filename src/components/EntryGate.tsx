@@ -1,17 +1,11 @@
 import { useEffect, useState } from 'react';
 import { unlockAudio, playEntrance } from '../utils/sound';
-
-const STATUSES = [
-  'gerade wahrscheinlich am coden, oder auch nicht',
-  'baut grad was für roblox',
-  'irgendwo zwischen zwei projekten',
-  'schach nebenbei offen, wie immer',
-];
+import { randomStatus } from '../utils/status';
 
 export default function EntryGate({ onEnter }: { onEnter: () => void }) {
   const [leaving, setLeaving] = useState(false);
   const [clock, setClock] = useState('');
-  const [status] = useState(() => STATUSES[Math.floor(Math.random() * STATUSES.length)]);
+  const [status] = useState(randomStatus);
 
   useEffect(() => {
     const update = () => setClock(new Date().toLocaleTimeString('de-DE'));
