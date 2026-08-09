@@ -68,6 +68,10 @@ const defaultResponses = [
 
 export default function HelpBot() {
   const [isOpen, setIsOpen] = useState(false);
+  const isOpenRef = useRef(isOpen);
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 0,
@@ -168,7 +172,7 @@ export default function HelpBot() {
       setMessages(prev => [...prev, botResponse]);
       setIsTyping(false);
       
-      if (!isOpen) {
+      if (!isOpenRef.current) {
         setUnreadCount(prev => prev + 1);
       }
     }, 800 + Math.random() * 700);
@@ -199,8 +203,13 @@ export default function HelpBot() {
           {/* Header */}
           <div className="p-4 border-b border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#BC0000]/20 flex items-center justify-center text-lg">
-                🤖
+              <div className="w-10 h-10 rounded-full bg-[#BC0000]/20 flex items-center justify-center text-[#BC0000]">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="4" y="9" width="16" height="10" rx="3" />
+                  <path d="M12 9V5M9.5 5h5" />
+                  <circle cx="9" cy="14" r="1.2" fill="currentColor" stroke="none" />
+                  <circle cx="15" cy="14" r="1.2" fill="currentColor" stroke="none" />
+                </svg>
               </div>
               <div>
                 <h4 className="font-bold text-sm">ACHECKMATE Bot</h4>
@@ -310,7 +319,11 @@ export default function HelpBot() {
         }}
         data-cursor-text="Chat"
       >
-        <span className="text-2xl group-hover:scale-110 transition-transform">💬</span>
+        <span className="text-white group-hover:scale-110 transition-transform">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z" />
+          </svg>
+        </span>
         
         {/* Unread badge */}
         {unreadCount > 0 && (

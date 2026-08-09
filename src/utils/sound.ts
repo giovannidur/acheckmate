@@ -25,34 +25,57 @@ export function unlockAudio() {
   unlocked = true;
 }
 
-function tone(freq: number, duration: number, volume: number, type: OscillatorType = 'sine') {
+interface ToneOptions {
+  freq: number;
+  endFreq?: number;
+  duration: number;
+  volume: number;
+  attack?: number;
+  type?: OscillatorType;
+  filterFreq?: number;
+}
+
+function playTone({ freq, endFreq, duration, volume, attack = 0.02, type = 'sine', filterFreq }: ToneOptions) {
   const audioCtx = getContext();
   if (!audioCtx || audioCtx.state === 'suspended') return;
 
+  const now = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
 
   osc.type = type;
-  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  osc.frequency.setValueAtTime(freq, now);
+  if (endFreq && endFreq !== freq) {
+    osc.frequency.exponentialRampToValueAtTime(endFreq, now + duration);
+  }
 
-  gain.gain.setValueAtTime(0, audioCtx.currentTime);
-  gain.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + 0.005);
-  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+  // Sanfter Attack statt hartem Einsatz, dann weiches Ausklingen
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(volume, now + attack);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
-  osc.connect(gain);
+  let node: AudioNode = osc;
+  if (filterFreq) {
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = filterFreq;
+    filter.Q.value = 0.6;
+    osc.connect(filter);
+    node = filter;
+  }
+  node.connect(gain);
   gain.connect(audioCtx.destination);
 
-  osc.start(audioCtx.currentTime);
-  osc.stop(audioCtx.currentTime + duration);
+  osc.start(now);
+  osc.stop(now + duration + 0.03);
 }
 
-// Dezenter Hover-Klick
+// Sehr dezenter, weicher Hover-Ton (tiefere Tonhöhe, sanfter Fade statt Klick)
 export function playHover() {
-  tone(1400, 0.045, 0.035, 'sine');
+  playTone({ freq: 720, endFreq: 600, duration: 0.1, volume: 0.018, attack: 0.02, filterFreq: 2800 });
 }
 
-// Etwas satterer Klick-Sound für Buttons/Links
+// Weicher "Pop" für Klicks, leichter Pitch-Glide statt zwei harten Einzeltönen
 export function playClick() {
-  tone(900, 0.07, 0.05, 'sine');
-  setTimeout(() => tone(1500, 0.05, 0.03, 'sine'), 15);
+  playTone({ freq: 480, endFreq: 700, duration: 0.13, volume: 0.03, attack: 0.015, filterFreq: 3600 });
 }

@@ -10,7 +10,7 @@ interface GuideMessage {
 }
 
 const guideMessages: GuideMessage[] = [
-  { section: 'hero', message: 'Checkmate! Willkommen in meinem Reich. Mach mach und scroll mal runter!' },
+  { section: 'hero', message: 'Checkmate! Willkommen in meinem Reich. Scroll mal runter, lohnt sich.' },
   { section: 'roblox', message: 'Das ist mein Lab. Hier entstehen die besten UGC Items und Maps.' },
   { section: 'webdev', message: 'Code ist wie Schach, man muss immer drei Züge voraus denken.' },
   { section: 'instagram', message: 'Hier gibt es den visuellen Flex. Folg mir mal!' },
