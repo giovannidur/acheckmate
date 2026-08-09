@@ -77,61 +77,78 @@ export default function CustomCursor() {
           const p = trail.current[i];
           ctx.lineTo(p.x, p.y);
         }
-        ctx.strokeStyle = 'rgba(255, 45, 45, 0.25)';
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(trail.current[0].x, trail.current[0].y);
+        for (let i = 1; i < trail.current.length; i++) {
+          const p = trail.current[i];
+          ctx.lineTo(p.x, p.y);
+        }
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
         ctx.lineWidth = 1;
         ctx.stroke();
       }
 
-      // Subtle glow so the cursor pops on both dark and light sections
-      ctx.shadowColor = 'rgba(255, 45, 45, 0.9)';
-      ctx.shadowBlur = 6;
+      // Helper: draw a line with black outline + white core (visible on any background)
+      const haloLine = (x1: number, y1: number, x2: number, y2: number) => {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.9)';
+        ctx.lineWidth = 3.5;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      };
 
-      // Center crosshair (at mouse position - instant)
-      const crossSize = expanded ? 0 : 10;
-      ctx.strokeStyle = expanded ? 'rgba(255, 45, 45, 0)' : 'rgba(255, 45, 45, 0.95)';
-      ctx.lineWidth = 1.5;
+      // Helper: draw a circle outline with black outline + white core
+      const haloCircle = (cx: number, cy: number, r: number, coreWidth: number) => {
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.85)';
+        ctx.lineWidth = coreWidth + 2.5;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = coreWidth;
+        ctx.stroke();
+      };
 
-      // Horizontal line
-      ctx.beginPath();
-      ctx.moveTo(mx - crossSize, my);
-      ctx.lineTo(mx - 3, my);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(mx + 3, my);
-      ctx.lineTo(mx + crossSize, my);
-      ctx.stroke();
+      if (!expanded) {
+        // Center crosshair (at mouse position - instant)
+        const crossSize = 10;
+        haloLine(mx - crossSize, my, mx - 3, my);
+        haloLine(mx + 3, my, mx + crossSize, my);
+        haloLine(mx, my - crossSize, mx, my - 3);
+        haloLine(mx, my + 3, mx, my + crossSize);
 
-      // Vertical line
-      ctx.beginPath();
-      ctx.moveTo(mx, my - crossSize);
-      ctx.lineTo(mx, my - 3);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(mx, my + 3);
-      ctx.lineTo(mx, my + crossSize);
-      ctx.stroke();
-
-      // Center dot
-      ctx.beginPath();
-      ctx.arc(mx, my, expanded ? 0 : 2, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255, 45, 45, 1)';
-      ctx.fill();
+        // Center dot
+        ctx.beginPath();
+        ctx.arc(mx, my, 3, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(mx, my, 2, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+      }
 
       // Outer ring (follows with lag)
       const ringRadius = expanded ? 35 : 20;
-      ctx.beginPath();
-      ctx.arc(sx, sy, ringRadius, 0, Math.PI * 2);
-      ctx.strokeStyle = expanded ? 'rgba(255, 45, 45, 0.5)' : 'rgba(255, 45, 45, 0.3)';
-      ctx.lineWidth = expanded ? 1.5 : 1;
-      ctx.stroke();
-
-      ctx.shadowBlur = 0;
+      haloCircle(sx, sy, ringRadius, expanded ? 1.5 : 1);
 
       // Expanded fill
       if (expanded) {
         ctx.beginPath();
         ctx.arc(sx, sy, 35, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 45, 45, 0.08)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
         ctx.fill();
       }
 
