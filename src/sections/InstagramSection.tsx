@@ -132,36 +132,50 @@ export default function InstagramSection() {
         {/* Interactive grid */}
         <ScrollReveal delay={800}>
           <div className="mt-16 grid grid-cols-3 md:grid-cols-6 gap-3 max-w-3xl">
-            {gridItems.map((item, i) => (
-              <div
-                key={i}
-                className="aspect-square rounded-2xl transition-all duration-700 relative overflow-hidden group flex flex-col items-center justify-center"
-                data-cursor-text={item.label}
-                data-interactive
-                onMouseEnter={() => setHoveredGrid(i)}
-                onMouseLeave={() => setHoveredGrid(null)}
-                style={{
-                  background: item.color,
-                  transform: hoveredGrid === i ? 'scale(1.1)' : hoveredGrid !== null ? 'scale(0.95)' : 'scale(1)',
-                  opacity: hoveredGrid !== null && hoveredGrid !== i ? 0.5 : 1,
-                  zIndex: hoveredGrid === i ? 10 : 1,
-                  boxShadow: hoveredGrid === i
-                    ? '0 16px 32px -10px rgba(0, 0, 0, 0.5)'
-                    : '0 4px 12px -6px rgba(0, 0, 0, 0.25)',
-                }}
-              >
-                <span className="text-white/90 group-hover:scale-110 transition-transform duration-500">
-                  {icons[item.label]}
-                </span>
-
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500 flex items-end justify-center pb-3">
-                  <span className="text-white text-[9px] tracking-[3px] uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ fontFamily: "'Space Mono', monospace" }}>
-                    {item.label}
+            {gridItems.map((item, i) => {
+              const active = hoveredGrid === i;
+              return (
+                <div
+                  key={i}
+                  className="aspect-square rounded-2xl transition-all duration-700 relative overflow-hidden flex flex-col items-center justify-center"
+                  data-cursor-text={item.label}
+                  data-interactive
+                  onMouseEnter={() => setHoveredGrid(i)}
+                  onMouseLeave={() => setHoveredGrid(null)}
+                  onClick={() => setHoveredGrid(active ? null : i)}
+                  style={{
+                    background: item.color,
+                    transform: active ? 'scale(1.1)' : hoveredGrid !== null ? 'scale(0.95)' : 'scale(1)',
+                    opacity: hoveredGrid !== null && !active ? 0.5 : 1,
+                    zIndex: active ? 10 : 1,
+                    boxShadow: active
+                      ? '0 16px 32px -10px rgba(0, 0, 0, 0.5)'
+                      : '0 4px 12px -6px rgba(0, 0, 0, 0.25)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span
+                    className="text-white/90 transition-transform duration-500"
+                    style={{ transform: active ? 'scale(1.1)' : 'scale(1)' }}
+                  >
+                    {icons[item.label]}
                   </span>
+
+                  {/* Label overlay — driven by real state so it works on tap, not just hover */}
+                  <div
+                    className="absolute inset-0 flex items-end justify-center pb-3 transition-all duration-500"
+                    style={{ background: active ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0)' }}
+                  >
+                    <span
+                      className="text-white text-[9px] tracking-[3px] uppercase transition-opacity duration-500"
+                      style={{ fontFamily: "'Space Mono', monospace", opacity: active ? 1 : 0 }}
+                    >
+                      {item.label}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </ScrollReveal>
       </div>
