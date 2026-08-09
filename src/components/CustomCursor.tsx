@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 
+const INTERACTIVE_SELECTOR = 'a, button, [data-cursor-text], [data-interactive]';
+
 export default function CustomCursor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cursorText, setCursorText] = useState('');
   const textRef = useRef<HTMLDivElement>(null);
+
   const mousePos = useRef({ x: -100, y: -100 });
   const smoothPos = useRef({ x: -100, y: -100 });
-  const trail = useRef<{ x: number; y: number; age: number }[]>([]);
+  const ringScale = useRef(0);
   const expandedRef = useRef(false);
+  const visibleRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -22,140 +26,102 @@ export default function CustomCursor() {
     resize();
     window.addEventListener('resize', resize);
 
+    // Single source of truth: recompute hover state directly from the
+    // element under the cursor on every move. Avoids flicker from
+    // separate mouseover/mouseout listeners on nested elements.
     const handleMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
-      trail.current.push({ x: e.clientX, y: e.clientY, age: 0 });
-      if (trail.current.length > 24) trail.current.shift();
-    };
+      visibleRef.current = true;
 
-    const handleOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const interactive = target.closest('a, button, [data-cursor-text], [data-interactive]');
+      const target = e.target as HTMLElement | null;
+      const interactive = target ? target.closest(INTERACTIVE_SELECTOR) : null;
+
       if (interactive) {
         expandedRef.current = true;
         const text = interactive.getAttribute('data-cursor-text') || '';
-        setCursorText(text);
-      }
-    };
-
-    const handleOut = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const interactive = target.closest('a, button, [data-cursor-text], [data-interactive]');
-      if (interactive) {
+        setCursorText((prev) => (prev === text ? prev : text));
+      } else {
         expandedRef.current = false;
-        setCursorText('');
+        setCursorText((prev) => (prev === '' ? prev : ''));
       }
     };
 
-    window.addEventListener('mousemove', handleMove);
-    document.addEventListener('mouseover', handleOver);
-    document.addEventListener('mouseout', handleOut);
+    const handleLeaveWindow = () => {
+      visibleRef.current = false;
+    };
+
+    const handleEnterWindow = () => {
+      visibleRef.current = true;
+    };
+
+    window.addEventListener('mousemove', handleMove, { passive: true });
+    document.documentElement.addEventListener('mouseleave', handleLeaveWindow);
+    document.documentElement.addEventListener('mouseenter', handleEnterWindow);
+
+    // Draw a shape twice — thick black underneath, thin white on top.
+    // Guarantees contrast against ANY background color, no blend-mode needed.
+    const haloCircleStroke = (cx: number, cy: number, r: number, coreWidth: number) => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.85)';
+      ctx.lineWidth = coreWidth + 2.5;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = coreWidth;
+      ctx.stroke();
+    };
+
+    const haloCircleFill = (cx: number, cy: number, r: number) => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r + 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+    };
 
     let animId: number;
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Smooth follow
-      smoothPos.current.x += (mousePos.current.x - smoothPos.current.x) * 0.15;
-      smoothPos.current.y += (mousePos.current.y - smoothPos.current.y) * 0.15;
+      if (visibleRef.current) {
+        // Smooth follow for the outer ring only — the dot itself stays 1:1 with the mouse
+        smoothPos.current.x += (mousePos.current.x - smoothPos.current.x) * 0.22;
+        smoothPos.current.y += (mousePos.current.y - smoothPos.current.y) * 0.22;
 
-      const mx = mousePos.current.x;
-      const my = mousePos.current.y;
-      const sx = smoothPos.current.x;
-      const sy = smoothPos.current.y;
-      const expanded = expandedRef.current;
+        const mx = mousePos.current.x;
+        const my = mousePos.current.y;
+        const sx = smoothPos.current.x;
+        const sy = smoothPos.current.y;
+        const expanded = expandedRef.current;
 
-      // Age trail points
-      trail.current.forEach(p => p.age++);
-      trail.current = trail.current.filter(p => p.age < 30);
+        const targetScale = expanded ? 1 : 0;
+        ringScale.current += (targetScale - ringScale.current) * 0.22;
 
-      // Draw trail
-      if (trail.current.length > 2) {
-        ctx.beginPath();
-        ctx.moveTo(trail.current[0].x, trail.current[0].y);
-        for (let i = 1; i < trail.current.length; i++) {
-          const p = trail.current[i];
-          ctx.lineTo(p.x, p.y);
+        // Small solid dot at the exact mouse position — always visible
+        const dotRadius = 4 - ringScale.current * 2.5;
+        if (dotRadius > 0.5) {
+          haloCircleFill(mx, my, dotRadius);
         }
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(trail.current[0].x, trail.current[0].y);
-        for (let i = 1; i < trail.current.length; i++) {
-          const p = trail.current[i];
-          ctx.lineTo(p.x, p.y);
+
+        // Ring that grows around interactive elements
+        if (ringScale.current > 0.02) {
+          const r = 8 + ringScale.current * 22;
+          haloCircleStroke(sx, sy, r, 1.4);
+          ctx.beginPath();
+          ctx.arc(sx, sy, r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.1 * ringScale.current})`;
+          ctx.fill();
         }
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
 
-      // Helper: draw a line with black outline + white core (visible on any background)
-      const haloLine = (x1: number, y1: number, x2: number, y2: number) => {
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.9)';
-        ctx.lineWidth = 3.5;
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-      };
-
-      // Helper: draw a circle outline with black outline + white core
-      const haloCircle = (cx: number, cy: number, r: number, coreWidth: number) => {
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.85)';
-        ctx.lineWidth = coreWidth + 2.5;
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = coreWidth;
-        ctx.stroke();
-      };
-
-      if (!expanded) {
-        // Center crosshair (at mouse position - instant)
-        const crossSize = 10;
-        haloLine(mx - crossSize, my, mx - 3, my);
-        haloLine(mx + 3, my, mx + crossSize, my);
-        haloLine(mx, my - crossSize, mx, my - 3);
-        haloLine(mx, my + 3, mx, my + crossSize);
-
-        // Center dot
-        ctx.beginPath();
-        ctx.arc(mx, my, 3, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(mx, my, 2, 0, Math.PI * 2);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fill();
-      }
-
-      // Outer ring (follows with lag)
-      const ringRadius = expanded ? 35 : 20;
-      haloCircle(sx, sy, ringRadius, expanded ? 1.5 : 1);
-
-      // Expanded fill
-      if (expanded) {
-        ctx.beginPath();
-        ctx.arc(sx, sy, 35, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-        ctx.fill();
-      }
-
-      // Update text position
-      if (textRef.current) {
-        textRef.current.style.left = `${sx}px`;
-        textRef.current.style.top = `${sy}px`;
+        if (textRef.current) {
+          textRef.current.style.left = `${sx}px`;
+          textRef.current.style.top = `${sy - 32}px`;
+        }
       }
 
       animId = requestAnimationFrame(draw);
@@ -166,8 +132,8 @@ export default function CustomCursor() {
     return () => {
       window.removeEventListener('mousemove', handleMove);
       window.removeEventListener('resize', resize);
-      document.removeEventListener('mouseover', handleOver);
-      document.removeEventListener('mouseout', handleOut);
+      document.documentElement.removeEventListener('mouseleave', handleLeaveWindow);
+      document.documentElement.removeEventListener('mouseenter', handleEnterWindow);
       cancelAnimationFrame(animId);
     };
   }, []);
