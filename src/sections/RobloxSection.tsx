@@ -92,34 +92,34 @@ export default function RobloxSection() {
           </div>
         </ScrollReveal>
 
-        {/* Skill cards — equal height */}
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-5">
+        {/* Skill cards — sized to own content, no forced stretch */}
+        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
           {skills.map((item, i) => (
             <ScrollReveal key={item.title} delay={700 + i * 120}>
               <div
-                className="h-full p-8 md:p-10 rounded-[24px] border transition-all duration-500 flex flex-col"
+                className="p-8 md:p-10 rounded-[24px] border transition-all duration-500 flex flex-col"
                 onMouseEnter={() => setHoveredItem(i)}
                 onMouseLeave={() => setHoveredItem(null)}
                 data-interactive
                 style={{
-                  background: hoveredItem === i ? 'rgba(0,0,0,0.14)' : 'rgba(0,0,0,0.05)',
-                  borderColor: hoveredItem === i ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.1)',
+                  background: hoveredItem === i ? 'rgba(8, 8, 8, 0.92)' : 'rgba(8, 8, 8, 0.82)',
+                  borderColor: hoveredItem === i ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.08)',
                   transform: hoveredItem === i ? 'translateY(-6px)' : 'translateY(0)',
                   boxShadow: hoveredItem === i
-                    ? '0 20px 40px -14px rgba(0, 0, 0, 0.35)'
-                    : '0 4px 14px -8px rgba(0, 0, 0, 0.15)',
+                    ? '0 24px 44px -14px rgba(0, 0, 0, 0.55)'
+                    : '0 10px 24px -10px rgba(0, 0, 0, 0.35)',
                 }}
               >
                 <span
-                  className="text-[10px] tracking-[3px] uppercase opacity-40 mb-5 block"
-                  style={{ fontFamily: "'Space Mono', monospace", color: '#000' }}
+                  className="text-[10px] tracking-[3px] uppercase opacity-80 mb-5 block"
+                  style={{ fontFamily: "'Space Mono', monospace", color: '#FF4444' }}
                 >
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <h4 className="text-xl font-bold uppercase tracking-tight mb-4" style={{ color: '#000' }}>
+                <h4 className="text-xl font-bold uppercase tracking-tight mb-4" style={{ color: '#F5F5F7' }}>
                   {item.title}
                 </h4>
-                <p className="text-[13px] opacity-50 leading-[1.7] mt-auto" style={{ color: '#000' }}>
+                <p className="text-[13px] opacity-60 leading-[1.7]" style={{ color: '#F5F5F7' }}>
                   {item.desc}
                 </p>
               </div>
