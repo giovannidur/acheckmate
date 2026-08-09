@@ -80,16 +80,53 @@ export function playClick() {
   playTone({ freq: 480, endFreq: 700, duration: 0.13, volume: 0.03, attack: 0.015, filterFreq: 3600 });
 }
 
-// Warmer, aufsteigender Willkommens-Chime beim Betreten der Seite
+// Atmosphärischer Willkommens-Klang beim Betreten der Seite.
+// Mehrere leicht verstimmte Oszillatoren pro Note (Chorus-Effekt) für einen
+// weichen, glockenartigen Klangkörper statt eines simplen Pieptons —
+// dazu ein leiser tiefer Pad-Ton als Fundament.
 export function playEntrance() {
-  const notes = [
-    { freq: 330, delay: 0 },
-    { freq: 440, delay: 90 },
-    { freq: 660, delay: 180 },
-  ];
-  notes.forEach(({ freq, delay }) => {
-    setTimeout(() => {
-      playTone({ freq, endFreq: freq * 1.02, duration: 0.6, volume: 0.045, attack: 0.05, filterFreq: 3000 });
-    }, delay);
+  const audioCtx = getContext();
+  if (!audioCtx || audioCtx.state === 'suspended') return;
+  const now = audioCtx.currentTime;
+
+  // Tiefer Pad-Ton als atmosphärisches Fundament
+  const padOsc = audioCtx.createOscillator();
+  const padGain = audioCtx.createGain();
+  padOsc.type = 'sine';
+  padOsc.frequency.setValueAtTime(110, now);
+  const padFilter = audioCtx.createBiquadFilter();
+  padFilter.type = 'lowpass';
+  padFilter.frequency.value = 800;
+  padGain.gain.setValueAtTime(0.0001, now);
+  padGain.gain.exponentialRampToValueAtTime(0.025, now + 0.5);
+  padGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
+  padOsc.connect(padFilter);
+  padFilter.connect(padGain);
+  padGain.connect(audioCtx.destination);
+  padOsc.start(now);
+  padOsc.stop(now + 2.3);
+
+  // Glockenartige Akkord-Töne, leicht verstimmt für Schimmer
+  const notes = [330, 415, 495, 660];
+  notes.forEach((freq, i) => {
+    const delay = i * 0.09;
+    [0, 4, -3].forEach((detune) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + delay);
+      osc.detune.setValueAtTime(detune, now + delay);
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 2600;
+      gain.gain.setValueAtTime(0.0001, now + delay);
+      gain.gain.exponentialRampToValueAtTime(0.035, now + delay + 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + 1.4);
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + delay);
+      osc.stop(now + delay + 1.5);
+    });
   });
 }
