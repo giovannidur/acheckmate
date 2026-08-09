@@ -1,15 +1,60 @@
-import { useState } from 'react';
+import { useState, type ReactElement } from 'react';
 import ScrollReveal, { LineReveal } from '../components/ScrollReveal';
 import MagneticButton from '../components/MagneticButton';
 import FloatingChess from '../components/FloatingChess';
 
+// Minimalistische Line-Icons im Brand-Stil (statt generischer Emojis)
+const icons: Record<string, ReactElement> = {
+  UGC: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="8" width="18" height="9" rx="4" />
+      <path d="M8 12.5h.01M8 10.5v4M6 12.5h4" />
+      <circle cx="16" cy="11.5" r="1" />
+      <circle cx="18.2" cy="13.5" r="1" />
+    </svg>
+  ),
+  Build: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 21V9l8-5 8 5v12" />
+      <path d="M9 21v-6h6v6" />
+      <path d="M4 11h16" />
+    </svg>
+  ),
+  Code: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 8 4.5 12 9 16" />
+      <path d="M15 8l4.5 4-4.5 4" />
+    </svg>
+  ),
+  Design: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3c-4.97 0-9 3.8-9 8.5S6.6 20 10.5 20c.9 0 1.5-.6 1.5-1.4 0-.4-.15-.7-.4-1a1.4 1.4 0 0 1 1-2.4H14c3.3 0 6-2.5 6-6C20 5.6 16.4 3 12 3Z" />
+      <circle cx="7.5" cy="10.5" r=".9" fill="currentColor" stroke="none" />
+      <circle cx="11" cy="7.5" r=".9" fill="currentColor" stroke="none" />
+      <circle cx="15.5" cy="8.5" r=".9" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  Create: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M17.5 17.5 15 15M6 18l2.5-2.5M17.5 6.5 15 9" />
+    </svg>
+  ),
+  Ship: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2c2.5 2.5 3.5 6 3.5 9.5 0 1.7-.4 3.2-1 4.5h-5c-.6-1.3-1-2.8-1-4.5C8.5 8 9.5 4.5 12 2Z" />
+      <path d="M9.5 16 7 21l3-1.5M14.5 16l2.5 5-3-1.5" />
+      <circle cx="12" cy="10" r="1.4" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+};
+
 const gridItems = [
-  { color: 'linear-gradient(135deg, #BC0000 0%, #800000 100%)', label: 'UGC', icon: '🎮' },
-  { color: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)', label: 'Build', icon: '🏗️' },
-  { color: 'linear-gradient(135deg, #2a2a2a 0%, #444 100%)', label: 'Code', icon: '💻' },
-  { color: 'linear-gradient(135deg, #BC0000 0%, #600000 100%)', label: 'Design', icon: '🎨' },
-  { color: 'linear-gradient(135deg, #333 0%, #555 100%)', label: 'Create', icon: '✨' },
-  { color: 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)', label: 'Ship', icon: '🚀' },
+  { color: 'linear-gradient(135deg, #BC0000 0%, #800000 100%)', label: 'UGC' },
+  { color: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)', label: 'Build' },
+  { color: 'linear-gradient(135deg, #2a2a2a 0%, #444 100%)', label: 'Code' },
+  { color: 'linear-gradient(135deg, #BC0000 0%, #600000 100%)', label: 'Design' },
+  { color: 'linear-gradient(135deg, #333 0%, #555 100%)', label: 'Create' },
+  { color: 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)', label: 'Ship' },
 ];
 
 export default function InstagramSection() {
@@ -105,8 +150,8 @@ export default function InstagramSection() {
                     : '0 4px 12px -6px rgba(0, 0, 0, 0.25)',
                 }}
               >
-                <span className="text-xl md:text-2xl opacity-80 group-hover:scale-110 transition-transform duration-500">
-                  {item.icon}
+                <span className="text-white/90 group-hover:scale-110 transition-transform duration-500">
+                  {icons[item.label]}
                 </span>
 
                 {/* Hover overlay */}
