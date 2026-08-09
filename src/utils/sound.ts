@@ -79,3 +79,17 @@ export function playHover() {
 export function playClick() {
   playTone({ freq: 480, endFreq: 700, duration: 0.13, volume: 0.03, attack: 0.015, filterFreq: 3600 });
 }
+
+// Warmer, aufsteigender Willkommens-Chime beim Betreten der Seite
+export function playEntrance() {
+  const notes = [
+    { freq: 330, delay: 0 },
+    { freq: 440, delay: 90 },
+    { freq: 660, delay: 180 },
+  ];
+  notes.forEach(({ freq, delay }) => {
+    setTimeout(() => {
+      playTone({ freq, endFreq: freq * 1.02, duration: 0.6, volume: 0.045, attack: 0.05, filterFreq: 3000 });
+    }, delay);
+  });
+}

@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import Loader from './components/Loader';
+import EntryGate from './components/EntryGate';
 import CustomCursor from './components/CustomCursor';
 import SoundFX from './components/SoundFX';
 import GrainOverlay from './components/GrainOverlay';
@@ -15,9 +16,14 @@ import ContactSection from './sections/ContactSection';
 import LegalFooter from './sections/LegalFooter';
 
 export default function App() {
+  const [entered, setEntered] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const scrollProgressRef = useRef<HTMLDivElement>(null);
+
+  const handleEnter = useCallback(() => {
+    setEntered(true);
+  }, []);
 
   const handleLoadComplete = useCallback(() => {
     setLoaded(true);
@@ -50,8 +56,11 @@ export default function App() {
 
   return (
     <div className="relative">
+      {/* Entry gate — click to enter, unlocks audio, plays welcome chime */}
+      {!entered && <EntryGate onEnter={handleEnter} />}
+
       {/* Loader */}
-      <Loader onComplete={handleLoadComplete} />
+      {entered && <Loader onComplete={handleLoadComplete} />}
 
       {/* Grain Overlay */}
       <GrainOverlay />
